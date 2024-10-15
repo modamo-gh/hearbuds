@@ -1,19 +1,73 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { useCallback, useState } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
 
 const App = () => {
-  return <View style={styles.container}><View style={styles.search}><TextInput placeholder="Who are you looking for?"
-    placeholderTextColor="#7D7D7D"
-    selectionColor="#1DB954" style={styles.textInput} /></View><View style={styles.display}></View></View>
-}
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const debounce = <T extends (...args: any[]) => any>(
+    func: T,
+    delay: number
+  ) => {
+    let timeOutId: NodeJS.Timeout;
+
+    return (...args: Parameters<T>) => {
+      if (timeOutId) {
+        clearTimeout(timeOutId);
+      }
+
+      timeOutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  };
+
+  const handleSearch = useCallback(
+    debounce((text: string) => {
+      console.log(`Searching for ${text}...`);
+    }, 400),
+    []
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.search}>
+        <TextInput
+          onChangeText={(text) => {
+            setSearchTerm(text);
+            handleSearch(text);
+          }}
+          placeholder="Who are you looking for?"
+          placeholderTextColor="#7D7D7D"
+          selectionColor="#1DB954"
+          style={styles.textInput}
+          value={searchTerm}
+        />
+      </View>
+      <View style={styles.display}>
+        <Text style={{ color: "white", textAlign: "center" }}>
+          {searchTerm}
+        </Text>
+      </View>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  container: { backgroundColor: "#121212", flex: 1 }, display: { flex: 4 }, search: {
+  container: { backgroundColor: "#121212", flex: 1 },
+  display: {
+    alignContent: "center",
+    flex: 4,
+    flexDirection: "column",
+    justifyContent: "center"
+  },
+  search: {
     alignItems: "center",
     flexDirection: "row",
     marginBottom: 8,
     marginTop: 64,
     width: "100%"
-  }, textInput: {
+  },
+  textInput: {
     borderColor: "#1DB954",
     borderRadius: 5,
     borderWidth: 1,
@@ -23,6 +77,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     paddingHorizontal: 8
   }
-})
+});
 
 export default App;
