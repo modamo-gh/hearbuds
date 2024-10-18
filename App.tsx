@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
+import { search } from "./src/services/spotify";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -22,8 +23,10 @@ const App = () => {
   };
 
   const handleSearch = useCallback(
-    debounce((text: string) => {
-      console.log(`Searching for ${text}...`);
+    debounce(async (text: string) => {
+      const searchResults = await search(text);
+
+      console.log(searchResults)
     }, 400),
     []
   );
