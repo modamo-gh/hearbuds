@@ -44,7 +44,7 @@ export const search = async (searchTerm: string) => {
 			{ headers: { Authorization: `Bearer ${token}` } }
 		);
 
-		return response.data;
+		return response.data.artists.items;
 	} catch (error) {
 		console.log(error);
 	}
