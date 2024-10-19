@@ -43,7 +43,7 @@ export const search = async (searchTerm: string) => {
 			)}&type=artist`,
 			{ headers: { Authorization: `Bearer ${token}` } }
 		);
-
+		
 		return response.data.artists.items;
 	} catch (error) {
 		console.log(error);
