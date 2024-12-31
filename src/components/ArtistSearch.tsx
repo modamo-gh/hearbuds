@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { search } from "../services/spotify";
 
-const ArtistSearch = () => {
+const ArtistSearch = ({ artists, setArtists }) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [searchResults, setSearchResults] = useState([]);
 	const [dimension, setDimension] = useState(0);
@@ -36,10 +36,6 @@ const ArtistSearch = () => {
 	const handleSearch = useCallback(
 		debounce(async (text: string) => {
 			const searchResults = await search(text);
-
-			for (const searchResult of searchResults) {
-				console.log(searchResult);
-			}
 
 			setSearchResults(searchResults);
 		}, 400),
@@ -100,13 +96,20 @@ const ArtistSearch = () => {
 				}}
 				renderItem={({ item, index }) => (
 					<TouchableOpacity
-						onPress={() =>
-							setArtist({
+						onPress={async () => {
+							const result = {
 								url: item.images[0]?.url,
 								dimension,
 								name: item.name
-							})
-						}
+							};
+
+							setArtist(result);
+
+							let results = [...artists];
+							results.push(result);
+
+							setArtists(results);
+						}}
 						style={[
 							index % 2 === 0
 								? { marginRight: 8 }
